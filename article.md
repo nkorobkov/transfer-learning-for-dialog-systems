@@ -78,28 +78,37 @@ h = 5}
 ### Обработка данных
 
 В нашей работе в качестве тренировочных и тестовых данных мы использовали датасет собранный компанией SNIPS \cite{snips}. 
-Данные включают в себя более 16000 запросов пользователей на английском языке. Каждый запрос относится к одной из семи категорий по намерению пользователя. 
+Данные включают в себя более 13000 запросов пользователей на английском языке. Каждый запрос относится к одной из семи категорий по намерению пользователя. 
  
 Представленные намерения:
 \begin{itemize}
-  \item Get weather (Посмотреть погоду - 2400 записей)
-  \item Play music (Включить музыку - 2400 записей)
-  \item Book restaurant (Забронировать ресторан - 2400 записей)
-  \item Search item (Посик - 000 записей)
-  \item Add to playlist (Добавить в плейлист - 0000 записей) 
-  \item Rate book (Поставить оценку книге - 0000 записей)
-  \item Search movie schedule (Расписание сеансов кино - 000 записей)
+  \item Get weather (Посмотреть погоду - 2000 записей)
+  \item Play music (Включить музыку - 2000 записей)
+  \item Book restaurant (Забронировать ресторан - 1973 записей)
+  \item Search creative work (Посик произведений - 1954 записей)
+  \item Add to playlist (Добавить в плейлист - 1942 записей) 
+  \item Rate book (Поставить оценку книге - 1956 записей)
+  \item Search movie schedule (Расписание сеансов кино - 1959 записей)
 \end{itemize}
 
 Данные предоставленны компанией SNIPS по лицензии Creative Commons Zero v1.0 Universal и доступны для скачивания по ссылке \url{https://github.com/snipsco/nlu-benchmark}
-Примеры записей из датасета по категориям представленны ниже. 
 
-\begin{figure}[h]
+\begin{table}[H]
 \caption{Примеры запросов из датасета SNIPS}
-\centering
-\includegraphics{snips.png}
-\end{figure}
-
+\label{tabular:timesandtenses}
+\begin{center}
+\begin{tabular}{ccc}
+\textbf{Категория} & \textbf{Пример} \\
+Get weather & What is the forecast at 12 am in Sudan. \\
+Play music  & Play some 1954 songs on my Itunes. \\
+Book restaurant  & What is the forecast at 12 am in Sudan. \\
+Search creative work  & Find me the Lace and Whiskey soundtrack. \\
+Add to playlist  & Add this artist to spring music. \\
+Rate book  & give this textbook a 5 out of 6 rating. \\
+Search movie schedule  & Where is Road to the Stage playing. \\
+\end{tabular}
+\end{center}
+\end{table}
 Для подготовки тренировочных и тестовых данных на шведском языке мы использовали API сервиса Яндекс Переводчик \footnote{\url{https://translate.yandex.ru/developers}}. 
 
 ### Алгоритм

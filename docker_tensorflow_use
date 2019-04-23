@@ -1,0 +1,6 @@
+sudo docker run \
+         -v /Users/clarity/Code/Python/torch/spsu-vkr/models/universal_encoder:/models/universal_encoder \
+         -p 8501:8501 \
+         -e MODEL_NAME=universal_encoder        \
+         tensorflow/serving
+

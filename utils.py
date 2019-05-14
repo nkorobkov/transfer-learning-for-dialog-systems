@@ -8,7 +8,10 @@ import contractions
 import unicodedata
 import re
 import time
+from collections import defaultdict, Counter
 
+
+topics = ['BookRestaurant','GetWeather', 'SearchScreeningEvent','RateBook', 'SearchCreativeWork', 'AddToPlaylist', 'PlayMusic']
 
 
 def import_data(path = 'data/snips_processed/snips.csv'):
@@ -122,3 +125,39 @@ class Baseline(nn.Module):
     def forward(self, x):
         x = self.W(x)
         return self.out(x)
+
+def get_util(lprop, lload, n):
+    a = list(map(lambda x:(x - 1/7)**2, lprop))
+    b = lload[lprop.index(max(lprop))]
+    
+    return sum([aa * bb for aa, bb in zip(a, lload)]) * (7/6)
+
+def compute_per_word_label(labels, sentences):
+    en_stats = defaultdict(dict)
+    t_stats = Counter(labels)
+
+
+    for label, line in zip(labels, sentences):
+        seen = set()
+        for w in line.split():
+            if w not in seen:
+                en_stats[w][label] = en_stats[w].get(label, 0) + 1
+                en_stats[w]['n'] = en_stats[w].get('n', 0) + 1
+                seen.add(w)
+    utils = []
+    for k in en_stats:
+        label_prop = []
+        label_load = []
+        for t in topics:
+            en_stats[k][t] = en_stats[k].get(t, 0)
+            label_prop.append(en_stats[k][t]/en_stats[k]['n'])
+            label_load.append(en_stats[k][t]/t_stats[t])
+        en_stats[k]['lprop'] = label_prop
+        en_stats[k]['lload'] = label_load
+        
+        utility = get_util(label_prop, label_load, en_stats[k]['n'])
+        utils.append(utility)
+        en_stats[k]['u'] = utility
+        
+    return en_stats, utils
+

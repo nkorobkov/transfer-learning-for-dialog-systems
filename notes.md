@@ -1,7 +1,5 @@
 ### Надо сделать  еще 
-
-- дообучить gru до 500 итераций
-- добавить mse по юз  векторам у линейки и 
+ 
 
 ### Можно сделать еще
 
@@ -19,3 +17,17 @@
 
 ### Статьи
 https://code.fb.com/ai-research/laser-multilingual-sentence-embeddings/
+
+### Не документированные результаты
+
+RNN2label fastText-->label -- 96.7% (отлично, значит мы выбили максимум на трансфере)
+
+
+finnish
+
+fasttext --> avg --> label = 84.4% (cv5)
+fasttext --> weighted avg --> label = 94.3% (cv5)
+
+fasttext --> avg --> USE --> NN = 88.6% (cv5)
+fasttext --> weighted avg --> USE --> NN = 91.8% (cv5)
+

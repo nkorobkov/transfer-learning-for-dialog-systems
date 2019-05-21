@@ -161,3 +161,73 @@ def compute_per_word_label(labels, sentences):
         
     return en_stats, utils
 
+
+class RNN(nn.Module):
+    def __init__(self, max_s_len , emb_dim = 300, out_size = 512):
+        super(RNN, self).__init__()
+        
+        #(batch, sent_len, emb_dim)
+        
+        self.emb_dim = emb_dim
+        self.out_size =out_size
+        self.max_s_len = max_s_len
+        self.kernel_sizes = [2,3,5]
+        self.cnn_chan  = 128
+        self.lstm_hid  = 256
+        
+        self.drop = nn.Dropout(0.35)
+
+        self.max_pool_kernel_size = [(self.max_s_len - x + 1, 1) for x in self.kernel_sizes]
+
+        
+        self.conv1 = nn.Conv2d(in_channels=1, out_channels=self.cnn_chan, kernel_size=(self.kernel_sizes[0], self.emb_dim), )
+        self.conv2 = nn.Conv2d(in_channels=1, out_channels=self.cnn_chan, kernel_size=(self.kernel_sizes[1], self.emb_dim), )
+        self.conv3 = nn.Conv2d(in_channels=1, out_channels=self.cnn_chan, kernel_size=(self.kernel_sizes[2], self.emb_dim), )
+        
+        #dont add dropout  to last layer since there is only one layer
+        self.lstm = nn.GRU(input_size = self.emb_dim, hidden_size = self.lstm_hid,
+                         batch_first=True, bidirectional=True)
+    
+    
+        self.lin = nn.Linear(self.lstm_hid*2 + self.cnn_chan * 3, out_size)
+        
+        
+        
+    def forward(self, x, lens):
+        
+        # add chanels dimention:
+        xc = x.unsqueeze(1)
+        
+        x1 = self.conv1(xc)
+        x1 = F.max_pool2d(F.relu(x1), self.max_pool_kernel_size[0])
+        x1 = x1.squeeze(3).squeeze(2)
+        
+        x2 = self.conv1(xc)
+        x2 = F.max_pool2d(F.relu(x2), self.max_pool_kernel_size[1])
+        x2 = x2.squeeze(3).squeeze(2)
+
+        x3 = self.conv1(xc)
+        x3 = F.max_pool2d(F.relu(x3), self.max_pool_kernel_size[2])
+        x3 = x3.squeeze(3).squeeze(2)
+
+        ps = nn.utils.rnn.pack_padded_sequence(x, lens, batch_first=True, enforce_sorted=False)
+        
+        _, (h) = self.lstm(ps)
+        lstm_out = torch.cat((h[1],h[0]), dim =1)
+
+        out = torch.cat((x1,x2,x3, lstm_out), dim=1)
+        
+        out = self.drop(out)
+        out = self.lin(out)
+        
+        return out
+    
+    
+def closest_index(request, dots, forbiden_index=-1):
+    dists = np.linalg.norm(dots-request, axis=1)
+    res =  np.argmin(dists)
+    
+    if res == forbiden_index:
+        dists[res] = np.inf
+        return np.argmin(dists)
+    return res

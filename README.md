@@ -1,1 +1,9 @@
-# spsu-vkr
+# Transfer learning for dialog systems
+
+This repo contains all materials associated with bachelor final qualification work of Korobkov Nikita.  
+
+This work was presented on the 10th of June 2019 and recieved an exelent mark.
+
+Work is described extensively in articles:  
+- [English](https://github.com/nkorobkov/transfer-learning-for-dialog-systems/blob/master/article-eng.pdf)   
+- [Russian](https://github.com/nkorobkov/transfer-learning-for-dialog-systems/blob/master/article.pdf)
